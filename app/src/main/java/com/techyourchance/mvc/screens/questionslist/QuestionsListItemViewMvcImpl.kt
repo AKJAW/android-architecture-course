@@ -6,33 +6,25 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.Question
+import com.techyourchance.mvc.screens.common.BaseObservableViewMvc
 
-class QuestionsListItemViewMvcImpl(inflater: LayoutInflater, parent: ViewGroup): QuestionsListItemViewMvc {
+class QuestionsListItemViewMvcImpl(inflater: LayoutInflater, parent: ViewGroup):
+        BaseObservableViewMvc<QuestionsListItemViewMvc.Listener>(),
+        QuestionsListItemViewMvc {
 
     override val rootView: View = inflater.inflate(R.layout.layout_question_list_item, parent, false)
-    private val title: TextView = findViewById(R.id.txt_title)
 
-    private val listeners = mutableListOf<QuestionsListItemViewMvc.Listener>()
+    private val title: TextView = findViewById(R.id.txt_title)
 
     private var question: Question? = null
 
     init {
         rootView.setOnClickListener {
             val question = this.question ?: return@setOnClickListener
-            listeners.forEach {
+            getListeners().forEach {
                 it.onQuestionClicked(question)
             }
         }
-    }
-
-    private fun <T: View> findViewById(id: Int): T = rootView.findViewById(id)
-
-    override fun registerListener(listener: QuestionsListItemViewMvc.Listener) {
-        listeners.add(listener)
-    }
-
-    override fun unregisterListener(listener: QuestionsListItemViewMvc.Listener) {
-        listeners.remove(listener)
     }
 
     override fun bindQuestion(question: Question) {
