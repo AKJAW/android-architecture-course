@@ -6,43 +6,43 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.Question
-import org.w3c.dom.Text
 
 class QuestionsListAdapter(
         private val onQuestionClickListener: OnQuestionClickListener,
         context: Context
-) : ArrayAdapter<Question>(context, 0) {
+) : ArrayAdapter<Question>(context, 0), QuestionsListItemViewMvc.Listener {
 
     interface OnQuestionClickListener {
         fun onQuestionClicked(question: Question)
     }
 
-    private class ViewHolder (val title: TextView)
-
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view = convertView
-                ?: LayoutInflater
-                        .from(parent.context)
-                        .inflate(R.layout.layout_question_list_item, parent, false)
-                        .apply {
-                            val viewHolder = ViewHolder(findViewById(R.id.txt_title))
-                            tag = viewHolder
-                        }
+        val view: View = convertView ?: createItemView(parent)
 
         val question = getItem(position)
 
-        val viewHolder = view.tag as ViewHolder
-        // bind the data to views
-        viewHolder.title.text = question!!.title
+        if(question != null){
+            val viewMvc = view.tag as QuestionsListItemViewMvc
 
-        // set listener
-        view.setOnClickListener { onQuestionClicked(question) }
+            viewMvc.bindQuestion(question)
+        }
+
         return view
     }
 
-    private fun onQuestionClicked(question: Question) {
+    private fun createItemView(parent: ViewGroup): View {
+        val viewMvc = QuestionsListItemViewMvcImpl(LayoutInflater.from(context), parent)
+
+        viewMvc.registerListener(this)
+
+        val view = viewMvc.rootView
+        view.tag = viewMvc
+
+        return view
+    }
+
+    override fun onQuestionClicked(question: Question) {
         onQuestionClickListener.onQuestionClicked(question)
     }
 

@@ -8,10 +8,10 @@ import android.widget.ListView
 import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.Question
 
-class QuestionsListViewMvcImpl(inflater: LayoutInflater, viewGroup: ViewGroup?)
+class QuestionsListViewMvcImpl(inflater: LayoutInflater, parent: ViewGroup?)
     : QuestionsListAdapter.OnQuestionClickListener, QuestionsListViewMvc {
 
-    override val rootView: View = inflater.inflate(R.layout.layout_questions_list, viewGroup,false)
+    override val rootView: View = inflater.inflate(R.layout.layout_questions_list, parent,false)
     private val context: Context
         get() = rootView.context
 
@@ -26,9 +26,7 @@ class QuestionsListViewMvcImpl(inflater: LayoutInflater, viewGroup: ViewGroup?)
         questionsListView.adapter = questionsListAdapter
     }
 
-    private fun <T: View> findViewById(id: Int): T{
-        return rootView.findViewById(id)
-    }
+    private fun <T: View> findViewById(id: Int): T = rootView.findViewById(id)
 
     override fun registerListener(listener: QuestionsListViewMvc.Listener){
         listeners.add(listener)
