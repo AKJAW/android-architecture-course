@@ -22,7 +22,7 @@ class QuestionsListViewMvcImpl(inflater: LayoutInflater, viewGroup: ViewGroup?)
 
     init {
         questionsListView = findViewById(R.id.lst_questions)
-        questionsListAdapter = QuestionsListAdapter(context, this)
+        questionsListAdapter = QuestionsListAdapter(this, context)
         questionsListView.adapter = questionsListAdapter
     }
 
