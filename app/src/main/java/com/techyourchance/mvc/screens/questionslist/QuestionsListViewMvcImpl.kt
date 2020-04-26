@@ -4,27 +4,28 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.Question
 
 class QuestionsListViewMvcImpl(inflater: LayoutInflater, parent: ViewGroup?)
-    : QuestionsListAdapter.OnQuestionClickListener, QuestionsListViewMvc {
+    : QuestionsRecyclerAdapter.OnQuestionClickListener, QuestionsListViewMvc {
 
     override val rootView: View = inflater.inflate(R.layout.layout_questions_list, parent,false)
     private val context: Context
         get() = rootView.context
 
-    private val questionsListView: ListView
-    private val questionsListAdapter: QuestionsListAdapter
-
     private val listeners = mutableListOf<QuestionsListViewMvc.Listener>()
 
-    init {
-        questionsListView = findViewById(R.id.lst_questions)
-        questionsListAdapter = QuestionsListAdapter(this, context)
-        questionsListView.adapter = questionsListAdapter
-    }
+    private val questionsRecyclerAdapter = QuestionsRecyclerAdapter(inflater, this)
+    private val questionsRecyclerView: RecyclerView =
+            findViewById<RecyclerView>(R.id.recycler_questions).apply {
+                setHasFixedSize(true)
+                layoutManager = LinearLayoutManager(context)
+                adapter = questionsRecyclerAdapter
+            }
+
 
     private fun <T: View> findViewById(id: Int): T = rootView.findViewById(id)
 
@@ -37,9 +38,7 @@ class QuestionsListViewMvcImpl(inflater: LayoutInflater, parent: ViewGroup?)
     }
 
     override fun bindQuestions(questions: List<Question>) {
-        questionsListAdapter.clear()
-        questionsListAdapter.addAll(questions)
-        questionsListAdapter.notifyDataSetChanged()
+        questionsRecyclerAdapter.bindQuestions(questions)
     }
 
     override fun onQuestionClicked(question: Question) {
