@@ -8,7 +8,7 @@ import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.Question
 import com.techyourchance.mvc.screens.common.BaseObservableViewMvc
 
-class QuestionsListItemViewMvcImpl(inflater: LayoutInflater, parent: ViewGroup):
+class QuestionsListItemViewMvcImpl(inflater: LayoutInflater, parent: ViewGroup?):
         BaseObservableViewMvc<QuestionsListItemViewMvc.Listener>(),
         QuestionsListItemViewMvc {
 

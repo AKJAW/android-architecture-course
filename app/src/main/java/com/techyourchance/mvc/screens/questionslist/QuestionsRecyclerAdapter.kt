@@ -1,13 +1,13 @@
 package com.techyourchance.mvc.screens.questionslist
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.techyourchance.mvc.questions.Question
+import com.techyourchance.mvc.screens.common.ViewMvcFactory
 
 class QuestionsRecyclerAdapter(
-        private val inflater: LayoutInflater,
-        private val onQuestionClickListener: OnQuestionClickListener
+        private val onQuestionClickListener: OnQuestionClickListener,
+        private val viewMvcFactory: ViewMvcFactory
 ) : RecyclerView.Adapter<QuestionsRecyclerAdapter.MyViewHolder>(), QuestionsListItemViewMvc.Listener {
 
     interface OnQuestionClickListener {
@@ -20,7 +20,7 @@ class QuestionsRecyclerAdapter(
     private var questions = listOf<Question>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val viewMvc = QuestionsListItemViewMvcImpl(inflater, parent)
+        val viewMvc = viewMvcFactory.getQuestionsListItemViewMvc(parent)
 
         viewMvc.registerListener(this)
 
