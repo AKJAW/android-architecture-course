@@ -3,6 +3,7 @@ package com.techyourchance.mvc.common.dependencyinjection
 import android.app.Activity
 import android.view.LayoutInflater
 import com.techyourchance.mvc.networking.StackoverflowApi
+import com.techyourchance.mvc.questions.FetchLastActiveQuestionsUseCase
 import com.techyourchance.mvc.questions.FetchQuestionDetailsUseCase
 import com.techyourchance.mvc.screens.common.ViewMvcFactory
 
@@ -18,6 +19,10 @@ class ControllerCompositionRoot(compositionRoot: CompositionRoot, activity: Acti
 
     val fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase by lazy {
         FetchQuestionDetailsUseCase(stackOverflowApi)
+    }
+
+    val fetchLastActiveQuestionsUseCase: FetchLastActiveQuestionsUseCase by lazy {
+        FetchLastActiveQuestionsUseCase(stackOverflowApi)
     }
 
 }
