@@ -8,26 +8,32 @@ import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.FetchQuestionDetailsUseCase
 import com.techyourchance.mvc.questions.QuestionDetails
 import com.techyourchance.mvc.screens.common.BaseActivity
+import com.techyourchance.mvc.screens.common.MessageDisplayer
 
 class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.Listener {
 
     companion object {
         private const val EXTRA_QUESTION_ID = "EXTRA_QUESTION_ID"
 
-        fun start(context: Context, questionId: String?) {
+        fun start(context: Context, questionId: String) {
             val intent = Intent(context, QuestionDetailsActivity::class.java)
             intent.putExtra(EXTRA_QUESTION_ID, questionId)
             context.startActivity(intent)
         }
     }
 
-    private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
     private lateinit var viewMvc: QuestionDetailsViewMvc
+    private lateinit var messageDisplayer: MessageDisplayer
+    private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fetchQuestionDetailsUseCase = compositionRoot.fetchQuestionDetailsUseCase
+
         viewMvc = compositionRoot.viewMvcFactory.getQuestionDetailsViewMvc(null)
+
+        messageDisplayer = compositionRoot.messageDisplayer
+
+        fetchQuestionDetailsUseCase = compositionRoot.fetchQuestionDetailsUseCase
 
         setContentView(viewMvc.rootView)
     }
@@ -65,6 +71,6 @@ class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.List
 
     override fun fetchQuestionDetailsFailed() {
         viewMvc.hideProgressIndicator()
-        Toast.makeText(this, R.string.error_network_call_failed, Toast.LENGTH_SHORT).show()
+        messageDisplayer.showToast(R.string.error_network_call_failed)
     }
 }
