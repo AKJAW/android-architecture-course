@@ -5,17 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import com.techyourchance.mvc.R
-import com.techyourchance.mvc.networking.QuestionDetailsResponseSchema
-import com.techyourchance.mvc.networking.QuestionSchema
-import com.techyourchance.mvc.networking.StackoverflowApi
+import com.techyourchance.mvc.questions.FetchQuestionDetailsUseCase
 import com.techyourchance.mvc.questions.QuestionDetails
 import com.techyourchance.mvc.screens.common.BaseActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-
-class QuestionDetailsActivity : BaseActivity() {
+class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.Listener {
 
     companion object {
         private const val EXTRA_QUESTION_ID = "EXTRA_QUESTION_ID"
@@ -27,12 +21,12 @@ class QuestionDetailsActivity : BaseActivity() {
         }
     }
 
-    private lateinit var stackoverflowApi: StackoverflowApi
+    private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
     private lateinit var viewMvc: QuestionDetailsViewMvc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        stackoverflowApi = compositionRoot.stackOverflowApi
+        fetchQuestionDetailsUseCase = compositionRoot.fetchQuestionDetailsUseCase
         viewMvc = compositionRoot.viewMvcFactory.getQuestionDetailsViewMvc(null)
 
         setContentView(viewMvc.rootView)
@@ -42,49 +36,34 @@ class QuestionDetailsActivity : BaseActivity() {
         super.onStart()
 
         viewMvc.showProgressIndicator()
-        fetchQuestionDetails()
+
+        val questionId = getQuestionId()
+        if(questionId != null){
+            fetchQuestionDetailsUseCase.registerListener(this)
+            fetchQuestionDetailsUseCase.fetchQuestionDetailsAndNotify(questionId)
+        }
     }
 
-    private fun fetchQuestionDetails() {
-        stackoverflowApi.fetchQuestionDetails(getQuestionId())
-                .enqueue(object : Callback<QuestionDetailsResponseSchema?> {
-                    override fun onResponse(
-                            call: Call<QuestionDetailsResponseSchema?>?,
-                            response: Response<QuestionDetailsResponseSchema?>
-                    ) {
-                        val body = response.body()
-                        if (response.isSuccessful && body != null) {
-                            bindQuestionDetails(body.question)
-                        } else {
-                            networkCallFailed()
-                        }
-                    }
+    override fun onStop() {
+        super.onStop()
 
-                    override fun onFailure(
-                            call: Call<QuestionDetailsResponseSchema?>?,
-                            t: Throwable?
-                    ) {
-                        networkCallFailed()
-                    }
-                })
+        fetchQuestionDetailsUseCase.unregisterListener(this)
     }
 
     private fun getQuestionId(): String? {
         return intent.getStringExtra(EXTRA_QUESTION_ID)
     }
 
-    private fun bindQuestionDetails(questionSchema: QuestionSchema) {
-        viewMvc.hideProgressIndicator()
-        viewMvc.bindQuestion(
-                QuestionDetails(
-                        questionSchema.id,
-                        questionSchema.title,
-                        questionSchema.body
-                )
-        )
+    override fun fetchQuestionDetailsSuccess(details: QuestionDetails) {
+        bindQuestionDetails(details)
     }
 
-    private fun networkCallFailed() {
+    private fun bindQuestionDetails(questionDetails: QuestionDetails) {
+        viewMvc.hideProgressIndicator()
+        viewMvc.bindQuestion(questionDetails)
+    }
+
+    override fun fetchQuestionDetailsFailed() {
         viewMvc.hideProgressIndicator()
         Toast.makeText(this, R.string.error_network_call_failed, Toast.LENGTH_SHORT).show()
     }

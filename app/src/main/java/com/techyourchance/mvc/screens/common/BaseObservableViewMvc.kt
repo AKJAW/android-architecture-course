@@ -5,11 +5,11 @@ abstract class BaseObservableViewMvc<Listener>
 
     private val listeners = hashSetOf<Listener>()
 
-    override fun registerListener(listener: Listener) {
+    final override fun registerListener(listener: Listener) {
         listeners.add(listener)
     }
 
-    override fun unregisterListener(listener: Listener) {
+    final override fun unregisterListener(listener: Listener) {
         listeners.remove(listener)
     }
 
