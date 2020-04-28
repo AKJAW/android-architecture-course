@@ -20,6 +20,7 @@ class QuestionsListController(
     }
 
     fun onStart(){
+        viewMvc.showProgressIndication()
         fetchLastActiveQuestionsUseCase.registerListener(this)
         fetchLastActiveQuestionsUseCase.fetchLastActiveQuestionsAndNotify()
     }
@@ -33,14 +34,12 @@ class QuestionsListController(
     }
 
     override fun fetchLastActiveQuestionsSuccess(questions: List<Question>) {
-        bindQuestions(questions)
-    }
-
-    private fun bindQuestions(questions: List<Question>) {
+        viewMvc.hideProgressIndication()
         viewMvc.bindQuestions(questions)
     }
 
     override fun fetchLastActiveQuestionsFailed() {
+        viewMvc.hideProgressIndication()
         messageDisplayer.showToast(R.string.error_network_call_failed)
     }
 }

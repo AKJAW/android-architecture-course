@@ -3,6 +3,7 @@ package com.techyourchance.mvc.screens.questionslist
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.techyourchance.mvc.R
@@ -20,6 +21,7 @@ class QuestionsListViewMvcImpl(
         QuestionsListViewMvc {
 
     override val rootView: View = inflater.inflate(R.layout.layout_questions_list, parent,false)
+    private val progress: ProgressBar = findViewById(R.id.progress)
 
     private val questionsAdapter = QuestionsRecyclerAdapter(this, viewMvcFactory)
     private val recyclerView: RecyclerView =
@@ -39,4 +41,14 @@ class QuestionsListViewMvcImpl(
         }
     }
 
+    override fun showProgressIndication() {
+        progress.visibility = View.VISIBLE
+    }
+
+    override fun hideProgressIndication() {
+        progress.visibility = View.GONE
+    }
+
 }
+
+

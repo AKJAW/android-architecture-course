@@ -11,4 +11,8 @@ interface QuestionsListViewMvc: ObservableViewMvc<QuestionsListViewMvc.Listener>
 
     fun bindQuestions(questions: List<Question>)
 
+    //can these methods be in a stand alone interface?
+    fun showProgressIndication()
+
+    fun hideProgressIndication()
 }
