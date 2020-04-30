@@ -3,12 +3,11 @@ package com.techyourchance.mvc.screens.questiondetails
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.FetchQuestionDetailsUseCase
 import com.techyourchance.mvc.questions.QuestionDetails
-import com.techyourchance.mvc.screens.common.BaseActivity
-import com.techyourchance.mvc.screens.common.MessageDisplayer
+import com.techyourchance.mvc.screens.common.controllers.BaseActivity
+import com.techyourchance.mvc.screens.common.messages.ToastHelper
 
 class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.Listener {
 
@@ -23,7 +22,7 @@ class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.List
     }
 
     private lateinit var viewMvc: QuestionDetailsViewMvc
-    private lateinit var messageDisplayer: MessageDisplayer
+    private lateinit var toastHelper: ToastHelper
     private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +30,7 @@ class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.List
 
         viewMvc = compositionRoot.viewMvcFactory.getQuestionDetailsViewMvc(null)
 
-        messageDisplayer = compositionRoot.messageDisplayer
+        toastHelper = compositionRoot.messageDisplayer
 
         fetchQuestionDetailsUseCase = compositionRoot.fetchQuestionDetailsUseCase
 
@@ -71,6 +70,6 @@ class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.List
 
     override fun fetchQuestionDetailsFailed() {
         viewMvc.hideProgressIndicator()
-        messageDisplayer.showToast(R.string.error_network_call_failed)
+        toastHelper.show(R.string.error_network_call_failed)
     }
 }

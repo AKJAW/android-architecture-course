@@ -1,4 +1,4 @@
-package com.techyourchance.mvc.screens.questionslist
+package com.techyourchance.mvc.screens.questionslist.item
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.Question
-import com.techyourchance.mvc.screens.common.BaseObservableViewMvc
+import com.techyourchance.mvc.screens.common.view.BaseObservableViewMvc
 
 class QuestionsListItemViewMvcImpl(inflater: LayoutInflater, parent: ViewGroup?):
         BaseObservableViewMvc<QuestionsListItemViewMvc.Listener>(),

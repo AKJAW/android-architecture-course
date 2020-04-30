@@ -1,4 +1,4 @@
-package com.techyourchance.mvc.screens.common
+package com.techyourchance.mvc.common
 
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap

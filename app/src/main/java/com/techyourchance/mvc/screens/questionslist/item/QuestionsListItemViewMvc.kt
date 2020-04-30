@@ -1,7 +1,7 @@
-package com.techyourchance.mvc.screens.questionslist
+package com.techyourchance.mvc.screens.questionslist.item
 
 import com.techyourchance.mvc.questions.Question
-import com.techyourchance.mvc.screens.common.ObservableViewMvc
+import com.techyourchance.mvc.screens.common.view.ObservableViewMvc
 
 interface QuestionsListItemViewMvc: ObservableViewMvc<QuestionsListItemViewMvc.Listener> {
 

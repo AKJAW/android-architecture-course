@@ -1,4 +1,4 @@
-package com.techyourchance.mvc.screens.common
+package com.techyourchance.mvc.screens.common.navigator
 
 import android.content.Context
 import com.techyourchance.mvc.screens.questiondetails.QuestionDetailsActivity

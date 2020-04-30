@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.techyourchance.mvc.questions.Question
 import com.techyourchance.mvc.screens.common.ViewMvcFactory
+import com.techyourchance.mvc.screens.questionslist.item.QuestionsListItemViewMvc
 
 class QuestionsRecyclerAdapter(
         private val onQuestionClickListener: OnQuestionClickListener,

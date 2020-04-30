@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import com.techyourchance.mvc.networking.StackoverflowApi
 import com.techyourchance.mvc.questions.FetchLastActiveQuestionsUseCase
 import com.techyourchance.mvc.questions.FetchQuestionDetailsUseCase
-import com.techyourchance.mvc.screens.common.MessageDisplayer
-import com.techyourchance.mvc.screens.common.ScreenNavigator
 import com.techyourchance.mvc.screens.common.ViewMvcFactory
+import com.techyourchance.mvc.screens.common.messages.ToastHelper
+import com.techyourchance.mvc.screens.common.navigator.ScreenNavigator
 import com.techyourchance.mvc.screens.questionslist.QuestionsListController
 
 class ControllerCompositionRoot(compositionRoot: CompositionRoot, activity: Activity) {
@@ -25,7 +25,7 @@ class ControllerCompositionRoot(compositionRoot: CompositionRoot, activity: Acti
 
     private val screensNavigator = ScreenNavigator(context)
 
-    val messageDisplayer = MessageDisplayer(context)
+    val messageDisplayer = ToastHelper(context)
 
     val fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase by lazy {
         FetchQuestionDetailsUseCase(stackOverflowApi)

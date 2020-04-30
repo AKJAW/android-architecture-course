@@ -1,7 +1,7 @@
-package com.techyourchance.mvc.screens.common
+package com.techyourchance.mvc.screens.common.view
 
 abstract class BaseObservableViewMvc<Listener>
-    : BaseViewMvc(), ObservableViewMvc<Listener>{
+    : BaseViewMvc(), ObservableViewMvc<Listener> {
 
     private val listeners = hashSetOf<Listener>()
 

@@ -1,10 +1,10 @@
 package com.techyourchance.mvc.questions
 
+import com.techyourchance.mvc.common.BaseObservable
 import com.techyourchance.mvc.common.Constants
-import com.techyourchance.mvc.networking.QuestionSchema
-import com.techyourchance.mvc.networking.QuestionsListResponseSchema
 import com.techyourchance.mvc.networking.StackoverflowApi
-import com.techyourchance.mvc.screens.common.BaseObservable
+import com.techyourchance.mvc.networking.questions.QuestionSchema
+import com.techyourchance.mvc.networking.questions.QuestionsListResponseSchema
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

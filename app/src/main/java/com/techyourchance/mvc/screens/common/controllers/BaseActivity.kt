@@ -1,7 +1,7 @@
-package com.techyourchance.mvc.screens.common
+package com.techyourchance.mvc.screens.common.controllers
 
 import androidx.appcompat.app.AppCompatActivity
-import com.techyourchance.mvc.CustomApplication
+import com.techyourchance.mvc.common.CustomApplication
 import com.techyourchance.mvc.common.dependencyinjection.ControllerCompositionRoot
 
 abstract class BaseActivity : AppCompatActivity() {

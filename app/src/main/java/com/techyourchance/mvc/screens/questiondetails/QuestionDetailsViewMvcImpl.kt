@@ -7,7 +7,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.QuestionDetails
-import com.techyourchance.mvc.screens.common.BaseViewMvc
+import com.techyourchance.mvc.screens.common.view.BaseViewMvc
 
 class QuestionDetailsViewMvcImpl(layoutInflater: LayoutInflater, parent: ViewGroup?)
     : BaseViewMvc(), QuestionDetailsViewMvc {
