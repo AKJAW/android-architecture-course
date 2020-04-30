@@ -36,6 +36,8 @@ class QuestionsListController(
         screenNavigator.toQuestionDetails(question.id)
     }
 
+    override fun onDrawerQuestionsClicked() { /* empty because you're already on the screen */ }
+
     override fun fetchLastActiveQuestionsSuccess(questions: List<Question>) {
         viewMvc.hideProgressIndication()
         viewMvc.bindQuestions(questions)

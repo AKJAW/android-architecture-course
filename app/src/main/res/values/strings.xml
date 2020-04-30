@@ -3,4 +3,5 @@
     <string name="error_network_call_failed">network call failed</string>
     <string name="questions_list_toolbar_title">All questions</string>
     <string name="question_details_toolbar_title">Question</string>
+    <string name="drawer_menu_questions">Latest questions</string>
 </resources>

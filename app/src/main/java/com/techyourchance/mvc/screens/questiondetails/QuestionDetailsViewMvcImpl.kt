@@ -24,9 +24,9 @@ class QuestionDetailsViewMvcImpl(
     private val toolbar: Toolbar = findViewById(R.id.toolbar)
     private val toolbarMvcView: ToolbarViewMvc = viewMvcFactory.getToolbarViewMvc(toolbar)
 
-    private val progress: ProgressBar = rootView.findViewById(R.id.progress)
-    private val title: TextView = rootView.findViewById(R.id.txt_question_title)
-    private val body: TextView = rootView.findViewById(R.id.txt_question_body)
+    private val progress: ProgressBar = findViewById(R.id.progress)
+    private val title: TextView = findViewById(R.id.txt_question_title)
+    private val body: TextView = findViewById(R.id.txt_question_body)
 
     init {
         setUpToolbar()

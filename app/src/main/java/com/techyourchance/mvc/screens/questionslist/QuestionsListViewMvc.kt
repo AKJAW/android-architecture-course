@@ -7,6 +7,8 @@ interface QuestionsListViewMvc: ObservableViewMvc<QuestionsListViewMvc.Listener>
 
     interface Listener {
         fun onQuestionClicked(question: Question)
+
+        fun onDrawerQuestionsClicked()
     }
 
     fun bindQuestions(questions: List<Question>)

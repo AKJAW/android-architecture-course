@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.Question
 import com.techyourchance.mvc.screens.common.ViewMvcFactory
-import com.techyourchance.mvc.screens.common.view.BaseObservableViewMvc
+import com.techyourchance.mvc.screens.common.view.drawer.BaseNavDrawerViewMvc
+import com.techyourchance.mvc.screens.common.view.drawer.DrawerItem
 import com.techyourchance.mvc.screens.common.view.toolbar.ToolbarViewMvc
 
 class QuestionsListViewMvcImpl(
@@ -18,11 +19,14 @@ class QuestionsListViewMvcImpl(
         parent: ViewGroup?,
         viewMvcFactory: ViewMvcFactory
 ):
-        BaseObservableViewMvc<QuestionsListViewMvc.Listener>(),
+        BaseNavDrawerViewMvc<QuestionsListViewMvc.Listener>(
+                R.layout.layout_questions_list,
+                inflater,
+                parent
+        ),
         QuestionsRecyclerAdapter.OnQuestionClickListener,
         QuestionsListViewMvc {
 
-    override val rootView: View = inflater.inflate(R.layout.layout_questions_list, parent,false)
     private val progress: ProgressBar = findViewById(R.id.progress)
 
     private val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -39,6 +43,14 @@ class QuestionsListViewMvcImpl(
     init {
         toolbarMvc.setTitle(R.string.questions_list_toolbar_title)
         toolbar.addView(toolbarMvc.rootView)
+    }
+
+    override fun onDrawerItemClicked(drawerItem: DrawerItem) {
+        getListeners().forEach { listener ->
+            when(drawerItem) {
+                DrawerItem.QUESTIONS -> listener.onDrawerQuestionsClicked()
+            }
+        }
     }
 
     override fun bindQuestions(questions: List<Question>) {
