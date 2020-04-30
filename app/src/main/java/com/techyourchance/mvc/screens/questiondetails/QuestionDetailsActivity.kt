@@ -9,7 +9,7 @@ import com.techyourchance.mvc.questions.QuestionDetails
 import com.techyourchance.mvc.screens.common.controllers.BaseActivity
 import com.techyourchance.mvc.screens.common.messages.ToastHelper
 
-class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.Listener {
+class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.Listener, QuestionDetailsViewMvc.Listener {
 
     companion object {
         private const val EXTRA_QUESTION_ID = "EXTRA_QUESTION_ID"
@@ -39,6 +39,8 @@ class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.List
 
     override fun onStart() {
         super.onStart()
+
+        viewMvc.registerListener(this)
 
         viewMvc.showProgressIndicator()
 
@@ -71,5 +73,9 @@ class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.List
     override fun fetchQuestionDetailsFailed() {
         viewMvc.hideProgressIndicator()
         toastHelper.show(R.string.error_network_call_failed)
+    }
+
+    override fun onBackButtonClicked() {
+        onBackPressed()
     }
 }

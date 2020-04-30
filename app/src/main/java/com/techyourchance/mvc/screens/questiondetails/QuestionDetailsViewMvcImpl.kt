@@ -5,19 +5,44 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.QuestionDetails
-import com.techyourchance.mvc.screens.common.view.BaseViewMvc
+import com.techyourchance.mvc.screens.common.ViewMvcFactory
+import com.techyourchance.mvc.screens.common.view.BaseObservableViewMvc
+import com.techyourchance.mvc.screens.common.view.toolbar.ToolbarViewMvc
 
-class QuestionDetailsViewMvcImpl(layoutInflater: LayoutInflater, parent: ViewGroup?)
-    : BaseViewMvc(), QuestionDetailsViewMvc {
+class QuestionDetailsViewMvcImpl(
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup?,
+        viewMvcFactory: ViewMvcFactory
+)
+    : BaseObservableViewMvc<QuestionDetailsViewMvc.Listener>(), QuestionDetailsViewMvc {
 
     override val rootView: View = layoutInflater.inflate(R.layout.layout_question_details, parent, false)
 
-    private val progres: ProgressBar = rootView.findViewById(R.id.progress)
+    private val toolbar: Toolbar = findViewById(R.id.toolbar)
+    private val toolbarMvcView: ToolbarViewMvc = viewMvcFactory.getToolbarViewMvc(toolbar)
+
+    private val progress: ProgressBar = rootView.findViewById(R.id.progress)
     private val title: TextView = rootView.findViewById(R.id.txt_question_title)
     private val body: TextView = rootView.findViewById(R.id.txt_question_body)
 
+    init {
+        setUpToolbar()
+    }
+
+    private fun setUpToolbar() {
+        toolbarMvcView.setTitle(R.string.question_details_toolbar_title)
+        toolbarMvcView.showBackButton()
+        toolbarMvcView.setBackButtonClickListener {
+            getListeners().forEach {
+                it.onBackButtonClicked()
+            }
+        }
+
+        toolbar.addView(toolbarMvcView.rootView)
+    }
 
     override fun bindQuestion(questionDetails: QuestionDetails) {
         title.text = questionDetails.title
@@ -25,10 +50,11 @@ class QuestionDetailsViewMvcImpl(layoutInflater: LayoutInflater, parent: ViewGro
     }
 
     override fun showProgressIndicator() {
-        progres.visibility = View.VISIBLE
+        progress.visibility = View.VISIBLE
     }
 
     override fun hideProgressIndicator() {
-        progres.visibility = View.GONE
+        progress.visibility = View.GONE
     }
+
 }
