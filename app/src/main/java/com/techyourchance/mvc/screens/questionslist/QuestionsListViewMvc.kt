@@ -2,8 +2,11 @@ package com.techyourchance.mvc.screens.questionslist
 
 import com.techyourchance.mvc.questions.Question
 import com.techyourchance.mvc.screens.common.view.ObservableViewMvc
+import com.techyourchance.mvc.screens.common.view.drawer.NavDrawerViewMvc
 
-interface QuestionsListViewMvc: ObservableViewMvc<QuestionsListViewMvc.Listener> {
+interface QuestionsListViewMvc:
+        ObservableViewMvc<QuestionsListViewMvc.Listener>,
+        NavDrawerViewMvc {
 
     interface Listener {
         fun onQuestionClicked(question: Question)
@@ -13,7 +16,6 @@ interface QuestionsListViewMvc: ObservableViewMvc<QuestionsListViewMvc.Listener>
 
     fun bindQuestions(questions: List<Question>)
 
-    //can these methods be in a stand alone interface?
     fun showProgressIndication()
 
     fun hideProgressIndication()

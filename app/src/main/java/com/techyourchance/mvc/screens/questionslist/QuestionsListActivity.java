@@ -35,4 +35,11 @@ public class QuestionsListActivity extends BaseActivity {
         controller.onStop();
     }
 
+    @Override
+    public void onBackPressed() {
+        boolean wasHandled = controller.onBackPressed();
+        if(!wasHandled){
+            super.onBackPressed();
+        }
+    }
 }

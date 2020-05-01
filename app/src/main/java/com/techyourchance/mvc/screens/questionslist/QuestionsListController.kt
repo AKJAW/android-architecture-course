@@ -32,6 +32,17 @@ class QuestionsListController(
         fetchLastActiveQuestionsUseCase.unregisterListener(this)
     }
 
+    //It's better to expose the view implementation to the controller
+    //than the other way around, exposing the controller implementation to the view
+    fun onBackPressed(): Boolean {
+        if(viewMvc.isDrawerShown()){
+            viewMvc.closeDrawer()
+            return true
+        }
+
+        return false
+    }
+
     override fun onQuestionClicked(question: Question) {
         screenNavigator.toQuestionDetails(question.id)
     }

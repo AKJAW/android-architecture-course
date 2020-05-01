@@ -15,7 +15,7 @@ abstract class BaseNavDrawerViewMvc<Listener>(
         @LayoutRes contentLayoutId: Int,
         inflater: LayoutInflater,
         parent: ViewGroup?
-): BaseObservableViewMvc<Listener>(){
+): BaseObservableViewMvc<Listener>(), NavDrawerViewMvc {
 
     override val rootView: View = inflater.inflate(R.layout.layout_drawer, parent, false)
 
@@ -38,7 +38,13 @@ abstract class BaseNavDrawerViewMvc<Listener>(
 
     protected abstract fun onDrawerItemClicked(drawerItem: DrawerItem)
 
-    protected fun showDrawer() {
+    override fun isDrawerShown(): Boolean = drawerLayout.isDrawerOpen(GravityCompat.START)
+
+    override fun showDrawer() {
         drawerLayout.openDrawer(GravityCompat.START)
+    }
+
+    override fun closeDrawer() {
+        drawerLayout.closeDrawers()
     }
 }
