@@ -41,7 +41,15 @@ class QuestionsListViewMvcImpl(
             }
 
     init {
+        setUpToolbar()
+    }
+
+    private fun setUpToolbar() {
         toolbarMvc.setTitle(R.string.questions_list_toolbar_title)
+        toolbarMvc.showHamburgerButton()
+        toolbarMvc.setHamburgerButtonClickListener {
+            super.showDrawer()
+        }
         toolbar.addView(toolbarMvc.rootView)
     }
 

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import com.techyourchance.mvc.R
@@ -36,4 +37,8 @@ abstract class BaseNavDrawerViewMvc<Listener>(
     }
 
     protected abstract fun onDrawerItemClicked(drawerItem: DrawerItem)
+
+    protected fun showDrawer() {
+        drawerLayout.openDrawer(GravityCompat.START)
+    }
 }
