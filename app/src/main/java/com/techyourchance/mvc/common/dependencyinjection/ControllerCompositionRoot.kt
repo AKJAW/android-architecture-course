@@ -23,7 +23,7 @@ class ControllerCompositionRoot(compositionRoot: CompositionRoot, activity: Acti
 
     private val context: Context = activity
 
-    private val screensNavigator = ScreenNavigator(context)
+    val screenNavigator = ScreenNavigator(context)
 
     val messageDisplayer = ToastHelper(context)
 
@@ -37,7 +37,7 @@ class ControllerCompositionRoot(compositionRoot: CompositionRoot, activity: Acti
 
     val questionsListController: QuestionsListController by lazy {
         QuestionsListController(
-                screensNavigator,
+                screenNavigator,
                 messageDisplayer,
                 fetchLastActiveQuestionsUseCase
         )

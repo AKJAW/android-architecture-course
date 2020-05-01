@@ -9,17 +9,21 @@ import androidx.appcompat.widget.Toolbar
 import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.QuestionDetails
 import com.techyourchance.mvc.screens.common.ViewMvcFactory
-import com.techyourchance.mvc.screens.common.view.BaseObservableViewMvc
+import com.techyourchance.mvc.screens.common.view.drawer.BaseNavDrawerViewMvc
+import com.techyourchance.mvc.screens.common.view.drawer.DrawerItem
 import com.techyourchance.mvc.screens.common.view.toolbar.ToolbarViewMvc
 
 class QuestionDetailsViewMvcImpl(
         layoutInflater: LayoutInflater,
         parent: ViewGroup?,
         viewMvcFactory: ViewMvcFactory
-)
-    : BaseObservableViewMvc<QuestionDetailsViewMvc.Listener>(), QuestionDetailsViewMvc {
-
-    override val rootView: View = layoutInflater.inflate(R.layout.layout_question_details, parent, false)
+) :
+        BaseNavDrawerViewMvc<QuestionDetailsViewMvc.Listener>(
+                R.layout.layout_question_details,
+                layoutInflater,
+                parent
+        ),
+        QuestionDetailsViewMvc {
 
     private val toolbar: Toolbar = findViewById(R.id.toolbar)
     private val toolbarMvcView: ToolbarViewMvc = viewMvcFactory.getToolbarViewMvc(toolbar)
@@ -42,6 +46,13 @@ class QuestionDetailsViewMvcImpl(
         }
 
         toolbar.addView(toolbarMvcView.rootView)
+    }
+
+    override fun onDrawerItemClicked(drawerItem: DrawerItem) {
+        getListeners().forEach {
+            it.onDrawerItemClicked(drawerItem)
+        }
+
     }
 
     override fun bindQuestion(questionDetails: QuestionDetails) {

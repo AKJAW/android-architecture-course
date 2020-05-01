@@ -8,6 +8,8 @@ import com.techyourchance.mvc.questions.FetchQuestionDetailsUseCase
 import com.techyourchance.mvc.questions.QuestionDetails
 import com.techyourchance.mvc.screens.common.controllers.BaseActivity
 import com.techyourchance.mvc.screens.common.messages.ToastHelper
+import com.techyourchance.mvc.screens.common.navigator.ScreenNavigator
+import com.techyourchance.mvc.screens.common.view.drawer.DrawerItem
 
 class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.Listener, QuestionDetailsViewMvc.Listener {
 
@@ -22,6 +24,7 @@ class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.List
     }
 
     private lateinit var viewMvc: QuestionDetailsViewMvc
+    private lateinit var screenNavigator: ScreenNavigator
     private lateinit var toastHelper: ToastHelper
     private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
 
@@ -29,6 +32,8 @@ class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.List
         super.onCreate(savedInstanceState)
 
         viewMvc = compositionRoot.viewMvcFactory.getQuestionDetailsViewMvc(null)
+
+        screenNavigator = compositionRoot.screenNavigator
 
         toastHelper = compositionRoot.messageDisplayer
 
@@ -77,5 +82,19 @@ class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.List
 
     override fun onBackButtonClicked() {
         onBackPressed()
+    }
+
+    override fun onDrawerItemClicked(drawerItem: DrawerItem) {
+        when(drawerItem){
+            DrawerItem.QUESTIONS -> screenNavigator.toQuestionsListClearTop()
+        }
+    }
+
+    override fun onBackPressed() {
+        if(viewMvc.isDrawerShown()){
+            viewMvc.closeDrawer()
+        } else {
+            super.onBackPressed()
+        }
     }
 }
