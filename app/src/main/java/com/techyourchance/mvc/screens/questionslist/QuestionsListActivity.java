@@ -4,7 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.techyourchance.mvc.R;
 import com.techyourchance.mvc.screens.common.controllers.BaseActivity;
+import com.techyourchance.mvc.screens.common.navigator.BackPressedListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,39 +21,29 @@ public class QuestionsListActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
-    private QuestionsListController controller;
+    BackPressedListener backPressedListener;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        QuestionsListViewMvc viewMvc
-                = getCompositionRoot().getViewMvcFactory().getQuestionsListViewMvc(null);
+        setContentView(R.layout.layout_fragment_placeholder);
 
-        controller = getCompositionRoot().getQuestionsListController();
-        controller.bindView(viewMvc);
+        QuestionListFragment fragment;
+        if(savedInstanceState == null){
+            fragment = new QuestionListFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.placeholder_frame_layout, fragment).commit();
+        } else {
+            fragment = (QuestionListFragment) getSupportFragmentManager().findFragmentById(R.id.placeholder_frame_layout);
+        }
 
-        setContentView(viewMvc.getRootView());
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        controller.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        controller.onStop();
+        backPressedListener = fragment;
     }
 
     @Override
     public void onBackPressed() {
-        boolean wasHandled = controller.onBackPressed();
-        if(!wasHandled){
+        if(!backPressedListener.onBackPressed()){
             super.onBackPressed();
         }
     }
