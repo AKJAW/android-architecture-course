@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import com.techyourchance.mvc.screens.common.controllers.BaseFragment
 import com.techyourchance.mvc.screens.common.navigator.BackPressedListener
 
-class QuestionListFragment: BaseFragment(), BackPressedListener {
+class QuestionsListFragment: BaseFragment(), BackPressedListener {
 
     private lateinit var controller: QuestionsListController
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val viewMvc = compositionRoot.viewMvcFactory.getQuestionsListViewMvc(null)
+        val viewMvc = compositionRoot.viewMvcFactory.getQuestionsListViewMvc(container)
 
         controller = compositionRoot.questionsListController
         controller.bindView(viewMvc)

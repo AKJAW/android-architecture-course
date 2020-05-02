@@ -29,13 +29,13 @@ public class QuestionsListActivity extends BaseActivity {
 
         setContentView(R.layout.layout_fragment_placeholder);
 
-        QuestionListFragment fragment;
+        QuestionsListFragment fragment;
         if(savedInstanceState == null){
-            fragment = new QuestionListFragment();
+            fragment = new QuestionsListFragment();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.placeholder_frame_layout, fragment).commit();
         } else {
-            fragment = (QuestionListFragment) getSupportFragmentManager().findFragmentById(R.id.placeholder_frame_layout);
+            fragment = (QuestionsListFragment) getSupportFragmentManager().findFragmentById(R.id.placeholder_frame_layout);
         }
 
         backPressedListener = fragment;

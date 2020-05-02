@@ -4,15 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.techyourchance.mvc.R
-import com.techyourchance.mvc.questions.FetchQuestionDetailsUseCase
-import com.techyourchance.mvc.questions.QuestionDetails
 import com.techyourchance.mvc.screens.common.controllers.BaseActivity
-import com.techyourchance.mvc.screens.common.messages.ToastHelper
-import com.techyourchance.mvc.screens.common.navigator.ScreenNavigator
-import com.techyourchance.mvc.screens.common.view.drawer.DrawerItem
+import com.techyourchance.mvc.screens.common.navigator.BackPressedListener
 
-class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.Listener, QuestionDetailsViewMvc.Listener {
-
+class QuestionDetailsActivity : BaseActivity() {
     companion object {
         private const val EXTRA_QUESTION_ID = "EXTRA_QUESTION_ID"
 
@@ -23,77 +18,28 @@ class QuestionDetailsActivity : BaseActivity(), FetchQuestionDetailsUseCase.List
         }
     }
 
-    private lateinit var viewMvc: QuestionDetailsViewMvc
-    private lateinit var screenNavigator: ScreenNavigator
-    private lateinit var toastHelper: ToastHelper
-    private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
+    private lateinit var backPressedListener: BackPressedListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewMvc = compositionRoot.viewMvcFactory.getQuestionDetailsViewMvc(null)
+        setContentView(R.layout.layout_fragment_placeholder)
 
-        screenNavigator = compositionRoot.screenNavigator
-
-        toastHelper = compositionRoot.messageDisplayer
-
-        fetchQuestionDetailsUseCase = compositionRoot.fetchQuestionDetailsUseCase
-
-        setContentView(viewMvc.rootView)
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        viewMvc.registerListener(this)
-
-        viewMvc.showProgressIndicator()
-
-        val questionId = getQuestionId()
-        if(questionId != null){
-            fetchQuestionDetailsUseCase.registerListener(this)
-            fetchQuestionDetailsUseCase.fetchQuestionDetailsAndNotify(questionId)
+        val fragment: QuestionsDetailsFragment
+        if(savedInstanceState == null){
+            val questionId = intent.getStringExtra(EXTRA_QUESTION_ID) ?: ""
+            fragment = QuestionsDetailsFragment.newInstance(questionId)
+            val fragmentTransaction = supportFragmentManager.beginTransaction()
+            fragmentTransaction.add(R.id.placeholder_frame_layout, fragment).commit()
+        } else {
+            fragment = supportFragmentManager
+                    .findFragmentById(R.id.placeholder_frame_layout) as QuestionsDetailsFragment
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        fetchQuestionDetailsUseCase.unregisterListener(this)
-    }
-
-    private fun getQuestionId(): String? {
-        return intent.getStringExtra(EXTRA_QUESTION_ID)
-    }
-
-    override fun fetchQuestionDetailsSuccess(details: QuestionDetails) {
-        bindQuestionDetails(details)
-    }
-
-    private fun bindQuestionDetails(questionDetails: QuestionDetails) {
-        viewMvc.hideProgressIndicator()
-        viewMvc.bindQuestion(questionDetails)
-    }
-
-    override fun fetchQuestionDetailsFailed() {
-        viewMvc.hideProgressIndicator()
-        toastHelper.show(R.string.error_network_call_failed)
-    }
-
-    override fun onBackButtonClicked() {
-        onBackPressed()
-    }
-
-    override fun onDrawerItemClicked(drawerItem: DrawerItem) {
-        when(drawerItem){
-            DrawerItem.QUESTIONS -> screenNavigator.toQuestionsListClearTop()
-        }
+        backPressedListener = fragment
     }
 
     override fun onBackPressed() {
-        if(viewMvc.isDrawerShown()){
-            viewMvc.closeDrawer()
-        } else {
+        if(!backPressedListener.onBackPressed()){
             super.onBackPressed()
         }
     }
