@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.techyourchance.mvc.screens.common.controllers.BaseFragment
-import com.techyourchance.mvc.screens.common.navigator.BackPressedListener
 
-class QuestionsListFragment: BaseFragment(), BackPressedListener {
+class QuestionsListFragment: BaseFragment() {
+
+    companion object {
+        fun newInstance() = QuestionsListFragment()
+    }
 
     private lateinit var controller: QuestionsListController
 
@@ -30,5 +33,4 @@ class QuestionsListFragment: BaseFragment(), BackPressedListener {
         controller.onStop()
     }
 
-    override fun onBackPressed(): Boolean = controller.onBackPressed()
 }

@@ -1,4 +1,4 @@
-package com.techyourchance.mvc.screens.common.navigator
+package com.techyourchance.mvc.screens.common.controllers
 
 interface BackPressedListener {
 

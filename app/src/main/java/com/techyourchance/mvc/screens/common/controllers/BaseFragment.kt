@@ -12,6 +12,6 @@ abstract class BaseFragment: Fragment() {
 
     private fun createCompositionRoot(): ControllerCompositionRoot {
         val root = (requireActivity().application as CustomApplication).compositionRoot
-        return ControllerCompositionRoot(root, requireActivity())
+        return ControllerCompositionRoot(requireActivity(), root)
     }
 }

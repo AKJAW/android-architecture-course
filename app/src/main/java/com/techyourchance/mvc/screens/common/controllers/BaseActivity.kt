@@ -12,7 +12,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private fun createCompositionRoot(): ControllerCompositionRoot {
         val root = (application as CustomApplication).compositionRoot
-        return ControllerCompositionRoot(root, this)
+        return ControllerCompositionRoot(this, root)
     }
 
 }

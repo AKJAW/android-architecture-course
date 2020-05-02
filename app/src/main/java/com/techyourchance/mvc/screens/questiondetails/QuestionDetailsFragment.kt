@@ -7,13 +7,14 @@ import android.view.ViewGroup
 import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.FetchQuestionDetailsUseCase
 import com.techyourchance.mvc.questions.QuestionDetails
+import com.techyourchance.mvc.screens.common.controllers.BackPressedDispatcher
+import com.techyourchance.mvc.screens.common.controllers.BackPressedListener
 import com.techyourchance.mvc.screens.common.controllers.BaseFragment
 import com.techyourchance.mvc.screens.common.messages.ToastHelper
-import com.techyourchance.mvc.screens.common.navigator.BackPressedListener
 import com.techyourchance.mvc.screens.common.navigator.ScreenNavigator
 import com.techyourchance.mvc.screens.common.view.drawer.DrawerItem
 
-class QuestionsDetailsFragment:
+class QuestionDetailsFragment:
         BaseFragment(),
         FetchQuestionDetailsUseCase.Listener,
         QuestionDetailsViewMvc.Listener,
@@ -23,10 +24,10 @@ class QuestionsDetailsFragment:
     companion object {
         private const val ARG_QUESTION_ID = "ARG_QUESTION_ID"
 
-        fun newInstance(questionId: String): QuestionsDetailsFragment {
+        fun newInstance(questionId: String): QuestionDetailsFragment {
             val args = Bundle()
             args.putString(ARG_QUESTION_ID, questionId)
-            val fragment = QuestionsDetailsFragment()
+            val fragment = QuestionDetailsFragment()
             fragment.arguments = args
 
             return fragment
@@ -34,6 +35,7 @@ class QuestionsDetailsFragment:
     }
 
     private lateinit var viewMvc: QuestionDetailsViewMvc
+    private lateinit var backPressedDispatcher: BackPressedDispatcher
     private lateinit var screenNavigator: ScreenNavigator
     private lateinit var toastHelper: ToastHelper
     private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
@@ -41,8 +43,9 @@ class QuestionsDetailsFragment:
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewMvc = compositionRoot.viewMvcFactory.getQuestionDetailsViewMvc(container)
 
+        backPressedDispatcher = compositionRoot.backPressedDispatcher
         screenNavigator = compositionRoot.screenNavigator
-        toastHelper = compositionRoot.messageDisplayer
+        toastHelper = compositionRoot.toastHelper
         fetchQuestionDetailsUseCase = compositionRoot.fetchQuestionDetailsUseCase
 
         return viewMvc.rootView
@@ -51,8 +54,9 @@ class QuestionsDetailsFragment:
     override fun onStart() {
         super.onStart()
 
-        viewMvc.registerListener(this)
+        backPressedDispatcher.registerListener(this)
 
+        viewMvc.registerListener(this)
         viewMvc.showProgressIndicator()
 
         val questionId = getQuestionId()
@@ -64,6 +68,8 @@ class QuestionsDetailsFragment:
 
     override fun onStop() {
         super.onStop()
+
+        backPressedDispatcher.unregisterListener(this)
 
         fetchQuestionDetailsUseCase.unregisterListener(this)
     }
@@ -87,12 +93,13 @@ class QuestionsDetailsFragment:
     }
 
     override fun onBackButtonClicked() {
+        //TODO fix
         onBackPressed()
     }
 
     override fun onDrawerItemClicked(drawerItem: DrawerItem) {
         when(drawerItem){
-            DrawerItem.QUESTIONS -> screenNavigator.toQuestionsListClearTop()
+            DrawerItem.QUESTIONS -> screenNavigator.toQuestionsList()
         }
     }
 
