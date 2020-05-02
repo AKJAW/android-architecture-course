@@ -93,8 +93,7 @@ class QuestionDetailsFragment:
     }
 
     override fun onBackButtonClicked() {
-        //TODO fix
-        onBackPressed()
+        screenNavigator.navigateUp()
     }
 
     override fun onDrawerItemClicked(drawerItem: DrawerItem) {

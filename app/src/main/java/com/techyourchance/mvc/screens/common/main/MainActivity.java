@@ -1,25 +1,25 @@
 package com.techyourchance.mvc.screens.common.main;
 
 import android.os.Bundle;
-import android.widget.FrameLayout;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.techyourchance.mvc.R;
 import com.techyourchance.mvc.screens.common.controllers.BackPressedDispatcher;
 import com.techyourchance.mvc.screens.common.controllers.BackPressedListener;
 import com.techyourchance.mvc.screens.common.controllers.BaseActivity;
-import com.techyourchance.mvc.screens.common.controllers.FragmentFrameWrapper;
-import com.techyourchance.mvc.screens.questionslist.QuestionsListFragment;
+import com.techyourchance.mvc.screens.common.fragmenthelper.FragmentContainerWrapper;
+import com.techyourchance.mvc.screens.common.navigator.ScreenNavigator;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class MainActivity extends BaseActivity implements BackPressedDispatcher, FragmentFrameWrapper {
+public class MainActivity extends BaseActivity implements BackPressedDispatcher, FragmentContainerWrapper {
 
+    private ScreenNavigator screenNavigator;
     private final Set<BackPressedListener> backPressedListeners = new HashSet<>();
 
     @Override
@@ -28,10 +28,10 @@ public class MainActivity extends BaseActivity implements BackPressedDispatcher,
 
         setContentView(R.layout.layout_fragment_frame);
 
+        screenNavigator = getCompositionRoot().getScreenNavigator();
+
         if(savedInstanceState == null){
-            QuestionsListFragment fragment = new QuestionsListFragment();
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.placeholder_frame_layout, fragment).commit();
+            screenNavigator.toQuestionsList();
         }
     }
 
@@ -60,7 +60,7 @@ public class MainActivity extends BaseActivity implements BackPressedDispatcher,
 
     @NotNull
     @Override
-    public FrameLayout getFragmentFrame() {
+    public ViewGroup getFragmentContainer() {
         return findViewById(R.id.placeholder_frame_layout);
     }
 }

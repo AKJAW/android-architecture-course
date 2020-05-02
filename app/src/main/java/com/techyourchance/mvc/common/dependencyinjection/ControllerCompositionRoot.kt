@@ -9,7 +9,8 @@ import com.techyourchance.mvc.questions.FetchLastActiveQuestionsUseCase
 import com.techyourchance.mvc.questions.FetchQuestionDetailsUseCase
 import com.techyourchance.mvc.screens.common.ViewMvcFactory
 import com.techyourchance.mvc.screens.common.controllers.BackPressedDispatcher
-import com.techyourchance.mvc.screens.common.controllers.FragmentFrameWrapper
+import com.techyourchance.mvc.screens.common.fragmenthelper.FragmentContainerWrapper
+import com.techyourchance.mvc.screens.common.fragmenthelper.FragmentHelper
 import com.techyourchance.mvc.screens.common.main.MainActivity
 import com.techyourchance.mvc.screens.common.messages.ToastHelper
 import com.techyourchance.mvc.screens.common.navigator.ScreenNavigator
@@ -28,11 +29,13 @@ class ControllerCompositionRoot(
 
     val backPressedDispatcher: BackPressedDispatcher = activity as MainActivity
 
+    private val fragmentFrameWrapper: FragmentContainerWrapper = activity as MainActivity
+
     private val fragmentManager: FragmentManager = activity.supportFragmentManager
 
-    private val fragmentFrameWrapper: FragmentFrameWrapper = activity as MainActivity
+    private val fragmentHelper: FragmentHelper = FragmentHelper(activity, fragmentFrameWrapper, fragmentManager)
 
-    val screenNavigator = ScreenNavigator(fragmentManager, fragmentFrameWrapper)
+    val screenNavigator = ScreenNavigator(fragmentHelper)
 
     val toastHelper = ToastHelper(context)
 
