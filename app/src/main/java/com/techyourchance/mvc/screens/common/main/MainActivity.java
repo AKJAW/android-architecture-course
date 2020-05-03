@@ -75,9 +75,15 @@ public class MainActivity extends BaseActivity implements
                 wasBackPressHandled = true;
             }
         }
-        if(!wasBackPressHandled){
+
+        if (wasBackPressHandled) return;
+
+        if(isDrawerOpen()){
+            closeDrawer();
+        } else {
             super.onBackPressed();
         }
+
     }
 
     @NotNull
