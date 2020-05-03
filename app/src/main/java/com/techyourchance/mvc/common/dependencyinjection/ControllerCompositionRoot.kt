@@ -14,6 +14,7 @@ import com.techyourchance.mvc.screens.common.fragmenthelper.FragmentHelper
 import com.techyourchance.mvc.screens.common.main.MainActivity
 import com.techyourchance.mvc.screens.common.messages.ToastHelper
 import com.techyourchance.mvc.screens.common.navigator.ScreenNavigator
+import com.techyourchance.mvc.screens.common.view.drawer.NavDrawerHelper
 import com.techyourchance.mvc.screens.questionslist.QuestionsListController
 
 class ControllerCompositionRoot(
@@ -22,8 +23,6 @@ class ControllerCompositionRoot(
 ) {
 
     private val layoutInflater: LayoutInflater = LayoutInflater.from(activity)
-
-    val viewMvcFactory = ViewMvcFactory(layoutInflater)
 
     private val context: Context = activity
 
@@ -35,9 +34,13 @@ class ControllerCompositionRoot(
 
     private val fragmentHelper: FragmentHelper = FragmentHelper(activity, fragmentFrameWrapper, fragmentManager)
 
-    val screenNavigator = ScreenNavigator(fragmentHelper)
+    val screenNavigator: ScreenNavigator = ScreenNavigator(fragmentHelper)
 
-    val toastHelper = ToastHelper(context)
+    val navDrawerHelper: NavDrawerHelper = activity as MainActivity
+
+    val viewMvcFactory: ViewMvcFactory = ViewMvcFactory(layoutInflater, navDrawerHelper)
+
+    val toastHelper: ToastHelper = ToastHelper(context)
 
     private val stackOverflowApi: StackoverflowApi by lazy {
         compositionRoot.stackOverflowApi
@@ -53,7 +56,6 @@ class ControllerCompositionRoot(
 
     val questionsListController: QuestionsListController by lazy {
         QuestionsListController(
-                backPressedDispatcher,
                 screenNavigator,
                 toastHelper,
                 fetchLastActiveQuestionsUseCase

@@ -8,17 +8,14 @@ import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.FetchQuestionDetailsUseCase
 import com.techyourchance.mvc.questions.QuestionDetails
 import com.techyourchance.mvc.screens.common.controllers.BackPressedDispatcher
-import com.techyourchance.mvc.screens.common.controllers.BackPressedListener
 import com.techyourchance.mvc.screens.common.controllers.BaseFragment
 import com.techyourchance.mvc.screens.common.messages.ToastHelper
 import com.techyourchance.mvc.screens.common.navigator.ScreenNavigator
-import com.techyourchance.mvc.screens.common.view.drawer.DrawerItem
 
 class QuestionDetailsFragment:
         BaseFragment(),
         FetchQuestionDetailsUseCase.Listener,
-        QuestionDetailsViewMvc.Listener,
-        BackPressedListener
+        QuestionDetailsViewMvc.Listener
 {
 
     companion object {
@@ -38,6 +35,7 @@ class QuestionDetailsFragment:
     private lateinit var backPressedDispatcher: BackPressedDispatcher
     private lateinit var screenNavigator: ScreenNavigator
     private lateinit var toastHelper: ToastHelper
+
     private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,6 +44,7 @@ class QuestionDetailsFragment:
         backPressedDispatcher = compositionRoot.backPressedDispatcher
         screenNavigator = compositionRoot.screenNavigator
         toastHelper = compositionRoot.toastHelper
+
         fetchQuestionDetailsUseCase = compositionRoot.fetchQuestionDetailsUseCase
 
         return viewMvc.rootView
@@ -53,8 +52,6 @@ class QuestionDetailsFragment:
 
     override fun onStart() {
         super.onStart()
-
-        backPressedDispatcher.registerListener(this)
 
         viewMvc.registerListener(this)
         viewMvc.showProgressIndicator()
@@ -68,8 +65,6 @@ class QuestionDetailsFragment:
 
     override fun onStop() {
         super.onStop()
-
-        backPressedDispatcher.unregisterListener(this)
 
         fetchQuestionDetailsUseCase.unregisterListener(this)
     }
@@ -96,17 +91,4 @@ class QuestionDetailsFragment:
         screenNavigator.navigateUp()
     }
 
-    override fun onDrawerItemClicked(drawerItem: DrawerItem) {
-        when(drawerItem){
-            DrawerItem.QUESTIONS -> screenNavigator.toQuestionsList()
-        }
-    }
-
-    override fun onBackPressed(): Boolean {
-        if(viewMvc.isDrawerShown()){
-            viewMvc.closeDrawer()
-            return true
-        }
-        return false
-    }
 }

@@ -1,11 +1,19 @@
 package com.techyourchance.mvc.screens.common.view.drawer
 
-interface NavDrawerViewMvc {
+import android.widget.FrameLayout
+import com.techyourchance.mvc.screens.common.view.ObservableViewMvc
 
-    fun isDrawerShown(): Boolean
+interface NavDrawerViewMvc: ObservableViewMvc<NavDrawerViewMvc.Listener> {
 
-    fun showDrawer()
+    interface Listener {
+        fun onQuestionsClicked()
+    }
+
+    val fragmentFrame: FrameLayout
+
+    fun isDrawerOpen(): Boolean
+
+    fun openDrawer()
 
     fun closeDrawer()
-
 }

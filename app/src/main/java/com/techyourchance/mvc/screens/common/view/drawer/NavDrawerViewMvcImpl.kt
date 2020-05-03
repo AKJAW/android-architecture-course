@@ -4,18 +4,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.annotation.LayoutRes
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import com.techyourchance.mvc.R
 import com.techyourchance.mvc.screens.common.view.BaseObservableViewMvc
 
-abstract class BaseNavDrawerViewMvc<Listener>(
-        @LayoutRes contentLayoutId: Int,
+class NavDrawerViewMvcImpl(
         inflater: LayoutInflater,
         parent: ViewGroup?
-): BaseObservableViewMvc<Listener>(), NavDrawerViewMvc {
+):
+        BaseObservableViewMvc<NavDrawerViewMvc.Listener>(),
+        NavDrawerViewMvc {
 
     override val rootView: View = inflater.inflate(R.layout.layout_drawer, parent, false)
 
@@ -24,23 +24,24 @@ abstract class BaseNavDrawerViewMvc<Listener>(
     private val navigationView: NavigationView = findViewById(R.id.navigation_view)
 
     init {
-        val content = inflater.inflate(contentLayoutId, parent, false)
-        contentPlaceholder.addView(content)
-
         navigationView.setNavigationItemSelectedListener { item ->
             drawerLayout.closeDrawers()
             when(item.itemId) {
-                R.id.drawer_menu_questions -> onDrawerItemClicked(DrawerItem.QUESTIONS)
+                R.id.drawer_menu_questions -> {
+                    getListeners().forEach {
+                        it.onQuestionsClicked()
+                    }
+                }
             }
             false
         }
     }
 
-    protected abstract fun onDrawerItemClicked(drawerItem: DrawerItem)
+    override val fragmentFrame: FrameLayout = contentPlaceholder
 
-    override fun isDrawerShown(): Boolean = drawerLayout.isDrawerOpen(GravityCompat.START)
+    override fun isDrawerOpen(): Boolean = drawerLayout.isDrawerOpen(GravityCompat.START)
 
-    override fun showDrawer() {
+    override fun openDrawer() {
         drawerLayout.openDrawer(GravityCompat.START)
     }
 
