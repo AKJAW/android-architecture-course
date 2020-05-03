@@ -2,7 +2,8 @@
     <string name="app_name">MVC</string>
     <string name="error_network_call_failed_title">Oops</string>
     <string name="error_network_call_failed_message">Network call failed</string>
-    <string name="error_network_call_failed_button">OK</string>
+    <string name="error_network_call_failed_positive_button">Retry</string>
+    <string name="error_network_call_failed_negative_button">Close</string>
     <string name="questions_list_toolbar_title">All questions</string>
     <string name="question_details_toolbar_title">Question</string>
     <string name="drawer_menu_questions">Latest questions</string>

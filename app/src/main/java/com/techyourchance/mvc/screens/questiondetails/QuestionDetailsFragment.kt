@@ -9,13 +9,14 @@ import com.techyourchance.mvc.questions.QuestionDetails
 import com.techyourchance.mvc.screens.common.controllers.BackPressedDispatcher
 import com.techyourchance.mvc.screens.common.controllers.BaseFragment
 import com.techyourchance.mvc.screens.common.dialogs.DialogManager
+import com.techyourchance.mvc.screens.common.dialogs.DialogsEventBus
+import com.techyourchance.mvc.screens.common.dialogs.promptdialog.PromptDialogEvent
 import com.techyourchance.mvc.screens.common.navigator.ScreenNavigator
 
 class QuestionDetailsFragment:
         BaseFragment(),
         FetchQuestionDetailsUseCase.Listener,
-        QuestionDetailsViewMvc.Listener
-{
+        QuestionDetailsViewMvc.Listener, DialogsEventBus.Listener {
 
     companion object {
         private const val ARG_QUESTION_ID = "ARG_QUESTION_ID"
@@ -34,6 +35,7 @@ class QuestionDetailsFragment:
     private lateinit var backPressedDispatcher: BackPressedDispatcher
     private lateinit var screenNavigator: ScreenNavigator
     private lateinit var dialogManager: DialogManager
+    private lateinit var dialogsEventBus: DialogsEventBus
 
     private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
 
@@ -43,6 +45,7 @@ class QuestionDetailsFragment:
         backPressedDispatcher = compositionRoot.backPressedDispatcher
         screenNavigator = compositionRoot.screenNavigator
         dialogManager = compositionRoot.dialogManager
+        dialogsEventBus = compositionRoot.dialogEventBus
 
         fetchQuestionDetailsUseCase = compositionRoot.fetchQuestionDetailsUseCase
 
@@ -51,6 +54,8 @@ class QuestionDetailsFragment:
 
     override fun onStart() {
         super.onStart()
+
+        dialogsEventBus.registerListener(this)
 
         viewMvc.registerListener(this)
         viewMvc.showProgressIndicator()
@@ -64,6 +69,10 @@ class QuestionDetailsFragment:
 
     override fun onStop() {
         super.onStop()
+
+        dialogsEventBus.unregisterListener(this)
+
+        viewMvc.unregisterListener(this)
 
         fetchQuestionDetailsUseCase.unregisterListener(this)
     }
@@ -88,6 +97,15 @@ class QuestionDetailsFragment:
 
     override fun onBackButtonClicked() {
         screenNavigator.navigateUp()
+    }
+
+    override fun onDialogEvent(event: Any) {
+        if (event is PromptDialogEvent && event.buttonClicked == PromptDialogEvent.Button.POSITIVE){
+            val questionId = getQuestionId()
+            if(questionId != null){
+                fetchQuestionDetailsUseCase.fetchQuestionDetailsAndNotify(questionId)
+            }
+        }
     }
 
 }
