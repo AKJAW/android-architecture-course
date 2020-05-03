@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.FetchQuestionDetailsUseCase
 import com.techyourchance.mvc.questions.QuestionDetails
 import com.techyourchance.mvc.screens.common.controllers.BackPressedDispatcher
 import com.techyourchance.mvc.screens.common.controllers.BaseFragment
-import com.techyourchance.mvc.screens.common.messages.ToastHelper
+import com.techyourchance.mvc.screens.common.dialogs.DialogManager
 import com.techyourchance.mvc.screens.common.navigator.ScreenNavigator
 
 class QuestionDetailsFragment:
@@ -34,7 +33,7 @@ class QuestionDetailsFragment:
     private lateinit var viewMvc: QuestionDetailsViewMvc
     private lateinit var backPressedDispatcher: BackPressedDispatcher
     private lateinit var screenNavigator: ScreenNavigator
-    private lateinit var toastHelper: ToastHelper
+    private lateinit var dialogManager: DialogManager
 
     private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
 
@@ -43,7 +42,7 @@ class QuestionDetailsFragment:
 
         backPressedDispatcher = compositionRoot.backPressedDispatcher
         screenNavigator = compositionRoot.screenNavigator
-        toastHelper = compositionRoot.toastHelper
+        dialogManager = compositionRoot.dialogManager
 
         fetchQuestionDetailsUseCase = compositionRoot.fetchQuestionDetailsUseCase
 
@@ -77,14 +76,14 @@ class QuestionDetailsFragment:
         bindQuestionDetails(details)
     }
 
+    override fun fetchQuestionDetailsFailed() {
+        viewMvc.hideProgressIndicator()
+        dialogManager.showUseCaseErrorDialog()
+    }
+
     private fun bindQuestionDetails(questionDetails: QuestionDetails) {
         viewMvc.hideProgressIndicator()
         viewMvc.bindQuestion(questionDetails)
-    }
-
-    override fun fetchQuestionDetailsFailed() {
-        viewMvc.hideProgressIndicator()
-        toastHelper.show(R.string.error_network_call_failed)
     }
 
     override fun onBackButtonClicked() {

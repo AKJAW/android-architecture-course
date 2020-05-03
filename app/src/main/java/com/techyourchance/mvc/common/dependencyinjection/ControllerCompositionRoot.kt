@@ -9,6 +9,7 @@ import com.techyourchance.mvc.questions.FetchLastActiveQuestionsUseCase
 import com.techyourchance.mvc.questions.FetchQuestionDetailsUseCase
 import com.techyourchance.mvc.screens.common.ViewMvcFactory
 import com.techyourchance.mvc.screens.common.controllers.BackPressedDispatcher
+import com.techyourchance.mvc.screens.common.dialogs.DialogManager
 import com.techyourchance.mvc.screens.common.fragmenthelper.FragmentContainerWrapper
 import com.techyourchance.mvc.screens.common.fragmenthelper.FragmentHelper
 import com.techyourchance.mvc.screens.common.main.MainActivity
@@ -34,6 +35,8 @@ class ControllerCompositionRoot(
 
     private val fragmentHelper: FragmentHelper = FragmentHelper(activity, fragmentFrameWrapper, fragmentManager)
 
+    val dialogManager: DialogManager = DialogManager(context, fragmentManager)
+
     val screenNavigator: ScreenNavigator = ScreenNavigator(fragmentHelper)
 
     val navDrawerHelper: NavDrawerHelper = activity as MainActivity
@@ -57,7 +60,7 @@ class ControllerCompositionRoot(
     val questionsListController: QuestionsListController by lazy {
         QuestionsListController(
                 screenNavigator,
-                toastHelper,
+                dialogManager,
                 fetchLastActiveQuestionsUseCase
         )
     }
