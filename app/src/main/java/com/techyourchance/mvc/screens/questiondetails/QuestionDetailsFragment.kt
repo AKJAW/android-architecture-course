@@ -19,6 +19,7 @@ class QuestionDetailsFragment:
         QuestionDetailsViewMvc.Listener, DialogsEventBus.Listener {
 
     companion object {
+        private const val TAG_PROMPT_DIALOG = "TAG_PROMPT_DIALOG"
         private const val ARG_QUESTION_ID = "ARG_QUESTION_ID"
 
         fun newInstance(questionId: String): QuestionDetailsFragment {
@@ -60,9 +61,9 @@ class QuestionDetailsFragment:
         viewMvc.registerListener(this)
         viewMvc.showProgressIndicator()
 
+        fetchQuestionDetailsUseCase.registerListener(this)
         val questionId = getQuestionId()
-        if(questionId != null){
-            fetchQuestionDetailsUseCase.registerListener(this)
+        if(questionId != null && dialogManager.getShownDialogTag() != TAG_PROMPT_DIALOG){
             fetchQuestionDetailsUseCase.fetchQuestionDetailsAndNotify(questionId)
         }
     }
@@ -87,7 +88,7 @@ class QuestionDetailsFragment:
 
     override fun fetchQuestionDetailsFailed() {
         viewMvc.hideProgressIndicator()
-        dialogManager.showUseCaseErrorDialog()
+        dialogManager.showUseCaseErrorDialog(TAG_PROMPT_DIALOG)
     }
 
     private fun bindQuestionDetails(questionDetails: QuestionDetails) {
@@ -100,10 +101,15 @@ class QuestionDetailsFragment:
     }
 
     override fun onDialogEvent(event: Any) {
-        if (event is PromptDialogEvent && event.buttonClicked == PromptDialogEvent.Button.POSITIVE){
-            val questionId = getQuestionId()
-            if(questionId != null){
-                fetchQuestionDetailsUseCase.fetchQuestionDetailsAndNotify(questionId)
+        if (event !is PromptDialogEvent) return
+
+        when(event.buttonClicked){
+            PromptDialogEvent.Button.POSITIVE -> {
+                val questionId = getQuestionId()
+                if(questionId != null){
+                    fetchQuestionDetailsUseCase.fetchQuestionDetailsAndNotify(questionId)
+                }
+
             }
         }
     }

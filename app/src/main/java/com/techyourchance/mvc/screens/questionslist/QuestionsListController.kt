@@ -1,13 +1,14 @@
 package com.techyourchance.mvc.screens.questionslist
 
+import com.techyourchance.mvc.R
 import com.techyourchance.mvc.questions.FetchLastActiveQuestionsUseCase
 import com.techyourchance.mvc.questions.Question
-import com.techyourchance.mvc.screens.common.dialogs.DialogManager
+import com.techyourchance.mvc.screens.common.messages.ToastHelper
 import com.techyourchance.mvc.screens.common.navigator.ScreenNavigator
 
 class QuestionsListController(
         private val screenNavigator: ScreenNavigator,
-        private val dialogManager: DialogManager,
+        private val toastHelper: ToastHelper,
         private val fetchLastActiveQuestionsUseCase: FetchLastActiveQuestionsUseCase
 ):
         QuestionsListViewMvc.Listener,
@@ -44,6 +45,6 @@ class QuestionsListController(
 
     override fun fetchLastActiveQuestionsFailed() {
         viewMvc.hideProgressIndication()
-        dialogManager.showUseCaseErrorDialog()
+        toastHelper.show(R.string.error_network_call_failed_message)
     }
 }

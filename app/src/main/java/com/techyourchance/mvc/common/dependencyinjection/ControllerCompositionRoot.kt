@@ -63,7 +63,7 @@ class ControllerCompositionRoot(
     val questionsListController: QuestionsListController by lazy {
         QuestionsListController(
                 screenNavigator,
-                dialogManager,
+                toastHelper,
                 fetchLastActiveQuestionsUseCase
         )
     }
