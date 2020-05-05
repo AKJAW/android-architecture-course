@@ -124,18 +124,16 @@ class QuestionDetailsFragment:
     override fun onDialogEvent(event: Any) {
         if (event !is PromptDialogEvent) return
 
-        when(event.buttonClicked){
+        screenState = when(event.buttonClicked){
             PromptDialogEvent.Button.POSITIVE -> {
                 val questionId = getQuestionId()
                 if(questionId != null){
                     fetchQuestionDetailsUseCase.fetchQuestionDetailsAndNotify(questionId)
                 }
-                screenState = ScreenState.IDLE
+                ScreenState.IDLE
 
             }
-            PromptDialogEvent.Button.NEGATIVE -> {
-                screenState = ScreenState.IDLE
-            }
+            PromptDialogEvent.Button.NEGATIVE -> ScreenState.IDLE
         }
     }
 

@@ -12,7 +12,7 @@ class DialogManager(
         private val fragmentManager: FragmentManager
 ) {
 
-    fun showUseCaseErrorDialog(tag: String){
+    fun showUseCaseErrorDialog(tag: String?){
         val dialog: DialogFragment = PromptDialog.newPromptDialog(
                 title = getString(R.string.error_network_call_failed_title),
                 message = getString(R.string.error_network_call_failed_message),

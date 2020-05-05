@@ -9,6 +9,8 @@ import com.techyourchance.mvc.screens.common.controllers.BaseFragment
 class QuestionsListFragment: BaseFragment() {
 
     companion object {
+        private const val SAVED_STATE_SCREEN_STATE = "SAVED_STATE_SCREEN_STATE"
+
         fun newInstance() = QuestionsListFragment()
     }
 
@@ -18,9 +20,20 @@ class QuestionsListFragment: BaseFragment() {
         val viewMvc = compositionRoot.viewMvcFactory.getQuestionsListViewMvc(container)
 
         controller = compositionRoot.questionsListController
+
+        val savedScreenState: QuestionsListController.SavedState? = savedInstanceState?.getParcelable(SAVED_STATE_SCREEN_STATE)
+        controller.restoreSavedState(savedScreenState)
+
         controller.bindView(viewMvc)
 
         return viewMvc.rootView
+    }
+
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putParcelable(SAVED_STATE_SCREEN_STATE, controller.getSavedState())
     }
 
     override fun onStart() {
