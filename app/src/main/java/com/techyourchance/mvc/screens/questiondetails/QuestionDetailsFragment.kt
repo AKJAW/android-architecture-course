@@ -19,6 +19,8 @@ class QuestionDetailsFragment:
         QuestionDetailsViewMvc.Listener, DialogsEventBus.Listener {
 
     companion object {
+        private const val SAVED_STATE_SCREEN_STATE = "SAVED_STATE_SCREEN_STATE"
+
         private const val TAG_PROMPT_DIALOG = "TAG_PROMPT_DIALOG"
         private const val ARG_QUESTION_ID = "ARG_QUESTION_ID"
 
@@ -32,6 +34,12 @@ class QuestionDetailsFragment:
         }
     }
 
+    private enum class ScreenState {
+        IDLE, QUESTION_DETAILS_SHOWN, NETWORK_ERROR
+    }
+
+    private lateinit var screenState: ScreenState
+
     private lateinit var viewMvc: QuestionDetailsViewMvc
     private lateinit var backPressedDispatcher: BackPressedDispatcher
     private lateinit var screenNavigator: ScreenNavigator
@@ -39,6 +47,13 @@ class QuestionDetailsFragment:
     private lateinit var dialogsEventBus: DialogsEventBus
 
     private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val savedScreenState = savedInstanceState?.getSerializable(SAVED_STATE_SCREEN_STATE) as? ScreenState
+        screenState = savedScreenState ?: ScreenState.IDLE
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewMvc = compositionRoot.viewMvcFactory.getQuestionDetailsViewMvc(container)
@@ -63,7 +78,7 @@ class QuestionDetailsFragment:
 
         fetchQuestionDetailsUseCase.registerListener(this)
         val questionId = getQuestionId()
-        if(questionId != null && dialogManager.getShownDialogTag() != TAG_PROMPT_DIALOG){
+        if(questionId != null && screenState != ScreenState.NETWORK_ERROR){
             fetchQuestionDetailsUseCase.fetchQuestionDetailsAndNotify(questionId)
         }
     }
@@ -78,22 +93,28 @@ class QuestionDetailsFragment:
         fetchQuestionDetailsUseCase.unregisterListener(this)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putSerializable(SAVED_STATE_SCREEN_STATE, screenState)
+    }
+
     private fun getQuestionId(): String? {
         return arguments?.getString(ARG_QUESTION_ID)
     }
 
     override fun fetchQuestionDetailsSuccess(details: QuestionDetails) {
-        bindQuestionDetails(details)
+        screenState = ScreenState.QUESTION_DETAILS_SHOWN
+
+        viewMvc.hideProgressIndicator()
+        viewMvc.bindQuestion(details)
     }
 
     override fun fetchQuestionDetailsFailed() {
+        screenState = ScreenState.NETWORK_ERROR
+
         viewMvc.hideProgressIndicator()
         dialogManager.showUseCaseErrorDialog(TAG_PROMPT_DIALOG)
-    }
-
-    private fun bindQuestionDetails(questionDetails: QuestionDetails) {
-        viewMvc.hideProgressIndicator()
-        viewMvc.bindQuestion(questionDetails)
     }
 
     override fun onBackButtonClicked() {
@@ -109,7 +130,11 @@ class QuestionDetailsFragment:
                 if(questionId != null){
                     fetchQuestionDetailsUseCase.fetchQuestionDetailsAndNotify(questionId)
                 }
+                screenState = ScreenState.IDLE
 
+            }
+            PromptDialogEvent.Button.NEGATIVE -> {
+                screenState = ScreenState.IDLE
             }
         }
     }
