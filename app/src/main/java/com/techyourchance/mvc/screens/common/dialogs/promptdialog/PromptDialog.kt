@@ -2,13 +2,10 @@ package com.techyourchance.mvc.screens.common.dialogs.promptdialog
 
 import android.app.Dialog
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
-import com.techyourchance.mvc.R
 import com.techyourchance.mvc.screens.common.dialogs.BaseDialog
 import com.techyourchance.mvc.screens.common.dialogs.DialogsEventBus
 
-class PromptDialog: BaseDialog() {
+class PromptDialog: BaseDialog(), PromtViewMvc.Listener {
 
     companion object {
         private const val ARG_TITLE = "ARG_TITLE"
@@ -35,16 +32,13 @@ class PromptDialog: BaseDialog() {
         }
     }
 
+    private lateinit var viewMvc: PromtViewMvc
     private lateinit var eventBus: DialogsEventBus
-
-    private lateinit var title: TextView
-    private lateinit var message: TextView
-    private lateinit var positiveButton: Button
-    private lateinit var negativeButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewMvc = compositionRoot.viewMvcFactory.getPromptViewMvc(null)
         eventBus = compositionRoot.dialogEventBus
     }
 
@@ -54,36 +48,34 @@ class PromptDialog: BaseDialog() {
             throw IllegalArgumentException("InfoDialog arguments cannot be empty")
         }
 
+
+        viewMvc.setTitle(arguments.getString(ARG_TITLE) ?: "")
+        viewMvc.setMessage(arguments.getString(ARG_MESSAGE) ?: "")
+        viewMvc.setNegativeButtonText(arguments.getString(ARG_NEGATIVE_BUTTON_TEXT) ?: "")
+        viewMvc.setPositiveButtonText(arguments.getString(ARG_POSITIVE_BUTTON_TEXT) ?: "")
+
         val dialog = Dialog(requireContext())
-        dialog.setContentView(R.layout.dialog_prompt)
-
-        title = dialog.findViewById(R.id.dialog_title)
-        message = dialog.findViewById(R.id.dialog_message)
-        negativeButton = dialog.findViewById(R.id.dialog_negative_button)
-        positiveButton = dialog.findViewById(R.id.dialog_positive_button)
-
-        title.text = arguments.getString(ARG_TITLE) ?: ""
-        message.text = arguments.getString(ARG_MESSAGE) ?: ""
-        negativeButton.text = arguments.getString(ARG_NEGATIVE_BUTTON_TEXT) ?: ""
-        positiveButton.text = arguments.getString(ARG_POSITIVE_BUTTON_TEXT) ?: ""
-
-        negativeButton.setOnClickListener {
-            onNegativeButtonClicked()
-        }
-
-        positiveButton.setOnClickListener {
-            onPositiveButtonClicked()
-        }
+        dialog.setContentView(viewMvc.rootView)
 
         return dialog
     }
 
-    private fun onNegativeButtonClicked() {
+    override fun onStart() {
+        super.onStart()
+        viewMvc.registerListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewMvc.unregisterListener(this)
+    }
+
+    override fun onNegativeButtonClicked() {
         dismiss()
         eventBus.postEvent(PromptDialogEvent(PromptDialogEvent.Button.NEGATIVE))
     }
 
-    private fun onPositiveButtonClicked() {
+    override fun onPositiveButtonClicked() {
         dismiss()
         eventBus.postEvent(PromptDialogEvent(PromptDialogEvent.Button.POSITIVE))
     }

@@ -2,6 +2,8 @@ package com.techyourchance.mvc.screens.common
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.techyourchance.mvc.screens.common.dialogs.promptdialog.PromtViewMvc
+import com.techyourchance.mvc.screens.common.dialogs.promptdialog.PromtViewMvcImpl
 import com.techyourchance.mvc.screens.common.view.drawer.NavDrawerHelper
 import com.techyourchance.mvc.screens.common.view.drawer.NavDrawerViewMvc
 import com.techyourchance.mvc.screens.common.view.drawer.NavDrawerViewMvcImpl
@@ -36,6 +38,10 @@ class ViewMvcFactory(
 
     fun getNavDrawerViewMvc(parent: ViewGroup?): NavDrawerViewMvc {
         return NavDrawerViewMvcImpl(layoutInflater, parent)
+    }
+
+    fun getPromptViewMvc(parent: ViewGroup?): PromtViewMvc {
+        return PromtViewMvcImpl(layoutInflater, parent)
     }
 
 }
